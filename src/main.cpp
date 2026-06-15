@@ -10,6 +10,7 @@ Esp32s3Uart uart2(2);
 
 void setup() {
     Serial.begin(115200);
+    lpf2_set_runtime_log_level(LPF2_LOG_LEVEL_DEBUG);
 
     if (uart1.begin(115200, SERIAL_8N1, 1, 2)) { // tx pin 1, rx pin 2
         uart1.setUartPinsState(false); // Set pins to active state
