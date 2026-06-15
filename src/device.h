@@ -86,12 +86,22 @@ public:
         return serial_.read();
     }
 
+    size_t read(uint8_t *data, size_t length) override
+    {
+        return serial_.readBytes(data, length);
+    }
+
     int available() override
     {
         return serial_.available();
     }
 
     void flush() override
+    {
+        serial_.flush(true); // Flush both TX and RX buffers
+    }
+
+    void discardRxFiFo() override
     {
         serial_.flush();
     }
@@ -146,6 +156,27 @@ public:
         constexpr float VREF = 3.3f;
         int raw = analogRead(pin);
         return (raw / 4095.0f) * VREF;
+    }
+
+    void writeCh(uint8_t ch, bool state) override
+    {
+        int pin = -1;
+
+        if (ch == 0)
+        {
+            pin = id1_pin_;
+        }
+        else
+        {
+            pin = id2_pin_;
+        }
+
+        if (pin < 0)
+        {
+            return;
+        }
+
+        digitalWrite(pin, state ? HIGH : LOW);
     }
 
 private:
